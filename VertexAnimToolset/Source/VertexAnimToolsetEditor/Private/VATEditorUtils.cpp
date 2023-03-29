@@ -116,7 +116,7 @@ static void MapSkinVerts(
 
 	for (int32 i = 0; i < SkinVerts.Num(); i++)
 	{
-		if (!UniqueVerts.Find(SkinVerts[i].Position))
+		if (UniqueVerts.Find(SkinVerts[i].Position) == INDEX_NONE)
 		{
 			UniqueID.Add(UniqueVerts.Num());
 			UniqueVerts.Add(SkinVerts[i].Position);
