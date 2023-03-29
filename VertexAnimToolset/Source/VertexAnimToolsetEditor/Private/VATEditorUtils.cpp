@@ -113,35 +113,17 @@ static void MapSkinVerts(
 {
 	TArray <FVector3f> UniqueVerts;
 	TArray <int32> UniqueID;
-	UniqueID.SetNumZeroed(SkinVerts.Num());
 
 	for (int32 i = 0; i < SkinVerts.Num(); i++)
 	{
-		int32 ID = INDEX_NONE;
-
-		if (InProfile->UVMergeDuplicateVerts)
+		if (!UniqueVerts.Find(SkinVerts[i].Position))
 		{
-			if (UniqueVerts.Find(SkinVerts[i].Position, ID))
-			{
-				UniqueID[i] = ID;
-			}
-			else
-			{
-				UniqueID[i] = UniqueVerts.Num();
-				UniqueVerts.Add(SkinVerts[i].Position);
-				UniqueVertsSourceID.Add(i);
-			}
-		}
-		else
-		{
-			UniqueID[i] = UniqueVerts.Num();
+			UniqueID.Add(UniqueVerts.Num());
 			UniqueVerts.Add(SkinVerts[i].Position);
 			UniqueVertsSourceID.Add(i);
 		}
 	}
-
-
-
+	
 	if (InProfile->AutoSize)
 	{
 		int32 XSize = FMath::Min(InProfile->MaxWidth, (int32)FMath::RoundUpToPowerOfTwo(UniqueVerts.Num()));
@@ -172,8 +154,8 @@ static void MapSkinVerts(
 	}
 
 	TArray <FVector2D> NewUVSet_Vert;
-	NewUVSet_Vert.SetNum(SkinVerts.Num());
-	for (int32 i = 0; i < SkinVerts.Num(); i++)
+	NewUVSet_Vert.SetNum(UniqueVerts.Num());
+	for (int32 i = 0; i < UniqueVerts.Num(); i++)
 	{
 		NewUVSet_Vert[i] = UniqueMappedUVs[UniqueID[i]];
 	}
@@ -435,7 +417,7 @@ void GatherAndBakeAllAnimVertData(
 {
 	bool bCachedCPUSkinning = false;
 	constexpr bool bRecreateRenderStateImmediately = true;
-	// 1บ switch to CPU skinning
+	// 1ยบ switch to CPU skinning
 	{
 		const int32 InLODIndex = 0;
 		{
@@ -462,7 +444,7 @@ void GatherAndBakeAllAnimVertData(
 		}
 	}
 
-	// 2บ Make Sure it in ref pose
+	// 2ยบ Make Sure it in ref pose
 	PreviewComponent->EnablePreview(true, NULL);
 	PreviewComponent->RefreshBoneTransforms(nullptr);
 	PreviewComponent->ClearMotionVector();
@@ -502,7 +484,7 @@ void GatherAndBakeAllAnimVertData(
 	const auto& ActiveBoneIndices = LODData.ActiveBoneIndices;
 	TArray <FMatrix44f> RefToLocal;
 
-	// 3บ Store Values
+	// 3ยบ Store Values
 	// Vert Anim
 	if (Profile->Anims_Vert.Num())
 	{
@@ -629,7 +611,7 @@ void GatherAndBakeAllAnimVertData(
 		}
 	}
 
-	// 4บ Put Mesh back into ref pose
+	// 4ยบ Put Mesh back into ref pose
 	{
 		PreviewComponent->EnablePreview(true, NULL);
 		PreviewComponent->RefreshBoneTransforms(nullptr);

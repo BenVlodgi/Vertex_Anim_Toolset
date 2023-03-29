@@ -41,8 +41,6 @@ public:
 	int32 MaxWidth = 2048;
 	
 	UPROPERTY(EditAnywhere, Category = VertAnim)
-		bool UVMergeDuplicateVerts = true;
-	UPROPERTY(EditAnywhere, Category = VertAnim)
 	FIntPoint OverrideSize_Vert = FIntPoint(0, 0);
 	UPROPERTY(EditAnywhere, Category = VertAnim)
 	TArray <FVASequenceData> Anims_Vert;
